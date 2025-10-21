@@ -10,11 +10,11 @@ router = APIRouter()
 
 class ScheduleRequest(BaseModel):
     username: str
-    hash_value: str
+    session_string: str
 
 class ScheduleResponse(BaseModel):
     success: bool
-    hash_value: str
+    session_string: str
 
 @router.post("/get-schedule", response_model=ScheduleResponse)
 async def get_schedule(request: ScheduleRequest, schedule_db: Session = Depends(get_schedule_db), account_db: Session = Depends(get_account_db)):
@@ -23,10 +23,10 @@ async def get_schedule(request: ScheduleRequest, schedule_db: Session = Depends(
     account = Account(request.username, account_db)
 
     # セッション確認
-    if not account.verify_session(request.hash_value):
+    if not account.verify_session(request.session_string):
         return ScheduleResponse(
             success=False,
-            hash_value=""
+            session_string=""
         )
 
     # セッション確認OKの場合、新しいセッション文字列を取得
@@ -34,10 +34,10 @@ async def get_schedule(request: ScheduleRequest, schedule_db: Session = Depends(
     if not new_session_string:
         return ScheduleResponse(
             success=False,
-            hash_value=""
+            session_string=""
         )
 
     return ScheduleResponse(
         success=True,
-        hash_value=new_session_string
+        session_string=new_session_string
     )

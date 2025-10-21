@@ -8,7 +8,7 @@ from typing import Generator
 load_dotenv()
 
 # スケジュール用データベース設定
-SCHEDULE_DATABASE_URL = os.getenv("SCHEDULE_DATABASE_URL", "postgresql://puser:ppassword@localhost:5432/portal?client_encoding=utf8")
+SCHEDULE_DATABASE_URL = os.getenv("SCHEDULE_DATABASE_URL", "postgresql://puser:ppassword@localhost:5432/portal_schedule?client_encoding=utf8")
 
 # スケジュール用エンジンとセッション
 schedule_engine = create_engine(
