@@ -2,7 +2,8 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 
-from ..core.database import get_db
+from .config import get_schedule_db
+from ..account.config import get_account_db
 from ..account.service import Account
 
 router = APIRouter()
@@ -16,10 +17,10 @@ class ScheduleResponse(BaseModel):
     hash_value: str
 
 @router.post("/get-schedule", response_model=ScheduleResponse)
-async def get_schedule(request: ScheduleRequest, db: Session = Depends(get_db)):
+async def get_schedule(request: ScheduleRequest, schedule_db: Session = Depends(get_schedule_db), account_db: Session = Depends(get_account_db)):
     """スケジュール取得API"""
-    # Accountインスタンス作成
-    account = Account(request.username, db)
+    # Accountインスタンス作成（アカウント用DBを使用）
+    account = Account(request.username, account_db)
 
     # セッション確認
     if not account.verify_session(request.hash_value):
